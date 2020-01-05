@@ -1,0 +1,5 @@
+SECRET_KEY="6hg$ety1k2_3l9-+6_yel*usq3p=)h=#+!u_1+s-81wj6lxkmk"
+
+RABBITMQ_HOST=rabbitmq
+RABBITMQ_DEFAULT_USER=admin
+RABBITMQ_DEFAULT_PASS=pass1234

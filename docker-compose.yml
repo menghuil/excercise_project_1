@@ -1,0 +1,49 @@
+version: '3'
+services:
+  db:
+    restart: always
+    image: postgres
+    volumes:
+      - backup-data:/var/lib/postgresql/data
+  rabbitmq:
+    hostname: rabbitmq
+    image: rabbitmq:3.7.23-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=pass1234
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+  web:
+    restart: always
+    build: ./dashboard
+    env_file:
+      - ./dashboard/.local_config
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dashboard:/usr/src/app
+    depends_on:
+      - db
+    command: python manage.py runserver 0.0.0.0:8000
+  celery:
+    build: ./dashboard
+    env_file:
+      - ./dashboard/.local_config
+    volumes:
+      - ./dashboard:/usr/src/app
+    depends_on:
+      - web
+      - rabbitmq
+    command: celery -A dashboard worker -l info
+  celery-beat:
+    build: ./dashboard
+    env_file:
+      - ./dashboard/.local_config
+    volumes:
+      - ./dashboard:/usr/src/app
+    depends_on:
+      - celery
+    command: celery -A dashboard beat -l info
+volumes:
+  backup-data:
