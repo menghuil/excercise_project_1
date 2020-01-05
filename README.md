@@ -1,1 +1,1 @@
-TODO: web 加上 entrypoint，並在裡面執行 
+TODO: web 加上 entrypoint，並在裡面多執行 python manage.py migrate
